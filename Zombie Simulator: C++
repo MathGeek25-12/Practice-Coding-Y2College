@@ -1,0 +1,104 @@
+// Module 8 Arrays.cpp 
+
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+//Populates the Array with random numbers
+//Problem number 1
+void PopArray(int Array[10][10], int rows, int cols) {
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			Array[i][j] = rand() % 89 + 11;
+		}
+	}
+}
+
+//Problem 7
+void MakeArray(int arr[10][10], int rows, int cols, int x, int y)
+{
+	// Check bounds
+	if (x < 0 || x >= rows || y < 0 || y >= cols) {
+		cout << "This is out of bounds. Try again." << endl;
+		return;
+	}
+
+	// Set x,y and surrounding cells to -1
+	for (int i = x - dist; i <= x + dist; i++) {
+		for (int j = y - 1; j <= y + 1; j++) {
+
+			if (i >= 0 && i < rows && j >= 0 && j < cols) {
+				arr[i][j] = -1;
+			}
+		}
+	}
+}
+
+int main() {
+	//Set up the random numbers
+	srand(time(0));
+	int Array[10][10];
+
+	//Call the Population Array function
+	PopArray(Array, 10, 10);
+
+	//Print the array with row totals
+	//Problem number 2
+	int totalSum = 0;
+	for (int i = 0; i < 10; i++) {
+		int rowSum = 0;
+		for (int j = 0; j < 10; j++) {
+			//Problem number 3
+			cout << Array[i][j] << "  ";
+			//Problem number 4
+			rowSum += Array[i][j];
+		}
+		//Problem number 5
+		cout << "| Row Sum: " << rowSum << endl;
+		totalSum += rowSum;
+	}
+
+	//Print the column sums
+	//Problem number6
+	for (int j = 0; j < y; j++) {
+		for (int i = 0; i < x; i++) {
+		}
+	}
+
+	//Prints the total sum
+	cout << "\nTotal Array Sum: " << totalSum << endl;
+
+	//Run the 7th problem
+	int rows = 4;
+	int cols = 5;
+
+	// Fill array with random numbers
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			arr[i][j] = rand() % 100;
+			cout << arr[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	cout << "Enter the integer for x: ";
+	cin >> x;
+
+	cout << "Enter the integer for y: ";
+	cin >> y;
+
+	MakeArray(arr, rows, cols, x, y);
+
+	cout << "\nAfter:\n";
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			cout << arr[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	return 0;
+}
