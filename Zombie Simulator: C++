@@ -1,104 +1,395 @@
-// Module 8 Arrays.cpp 
+//Module9_ZombieSim.cpp : This file contains the 'main' function. Program execution begins and ends there.
+---------------------------------------------------------------------------------------------------------------------------
+//MainFunction file
+
+#include "Humans1.h"
+#include "Points1.h"
+#include "Zombies1.h"
 
 #include <iostream>
+#include <ctime>
 #include <vector>
 #include <cstdlib>
-#include <ctime>
+
 using namespace std;
 
-//Populates the Array with random numbers
-//Problem number 1
-void PopArray(int Array[10][10], int rows, int cols) {
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < cols; j++) {
-			Array[i][j] = rand() % 89 + 11;
-		}
-	}
-}
+//Use global variables
+int x, y, zzX, zzY;
+//Functions to run the code
+void checkArgs();
+vector<vector<Points1*>> initWorld();
+void printWorld(const vector<vector<Points1*>>& World);
+void infect(vector<vector<Points1*>>& World);
 
-//Problem 7
-void MakeArray(int arr[10][10], int rows, int cols, int x, int y)
+int main(int argc, char* argv[])
 {
-	// Check bounds
-	if (x < 0 || x >= rows || y < 0 || y >= cols) {
-		cout << "This is out of bounds. Try again." << endl;
-		return;
-	}
+	//Include random time
+	srand(static_cast<unsigned int>(time(0)));
 
-	// Set x,y and surrounding cells to -1
-	for (int i = x - dist; i <= x + dist; i++) {
-		for (int j = y - 1; j <= y + 1; j++) {
+	//Command line arguments to make the grid with vertical and horizontal rows
+	x = atoi(argv[1]); //2D vector row count
+	y = atoi(argv[2]); //2D vector row lengths
+	zzX = atoi(argv[3]); //x position of Patient 0
+	zzY = atoi(argv[4]); //y position of Patient 0
 
-			if (i >= 0 && i < rows && j >= 0 && j < cols) {
-				arr[i][j] = -1;
-			}
-		}
-	}
-}
+	//Checks the range of values for the inputs
+	checkArgs();
 
-int main() {
-	//Set up the random numbers
-	srand(time(0));
-	int Array[10][10];
+	//Declare the world parameters
+	cout << "The world is " << x << " rows by " << y << " columns." << endl;
 
-	//Call the Population Array function
-	PopArray(Array, 10, 10);
+	//Create the initial infection
+	vector<vector<Points1*>> world = initWorld();
 
-	//Print the array with row totals
-	//Problem number 2
-	int totalSum = 0;
-	for (int i = 0; i < 10; i++) {
-		int rowSum = 0;
-		for (int j = 0; j < 10; j++) {
-			//Problem number 3
-			cout << Array[i][j] << "  ";
-			//Problem number 4
-			rowSum += Array[i][j];
-		}
-		//Problem number 5
-		cout << "| Row Sum: " << rowSum << endl;
-		totalSum += rowSum;
-	}
+	//print the world
+	printWorld(world);
+	//Infect the world
+	infect(world);
 
-	//Print the column sums
-	//Problem number6
-	for (int j = 0; j < y; j++) {
-		for (int i = 0; i < x; i++) {
-		}
-	}
-
-	//Prints the total sum
-	cout << "\nTotal Array Sum: " << totalSum << endl;
-
-	//Run the 7th problem
-	int rows = 4;
-	int cols = 5;
-
-	// Fill array with random numbers
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < cols; j++) {
-			arr[i][j] = rand() % 100;
-			cout << arr[i][j] << " ";
-		}
-		cout << endl;
-	}
-
-	cout << "Enter the integer for x: ";
-	cin >> x;
-
-	cout << "Enter the integer for y: ";
-	cin >> y;
-
-	MakeArray(arr, rows, cols, x, y);
-
-	cout << "\nAfter:\n";
-
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < cols; j++) {
-			cout << arr[i][j] << " ";
-		}
-		cout << endl;
-	}
+	//Create objects for infection
+	Zombies1 zombie;
+	Humans1 human;
 
 	return 0;
 }
+
+//Inital world printing:
+vector<vector<Points1*>> initWorld() {
+	vector<vector<Points1*>> World(x, vector<Points1*>(y));
+
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j < y; j++) {
+			World[i][j] = new Humans1();
+		}
+	}
+
+	delete World[zzX][zzY];
+	World[zzX][zzY] = new Zombies1();
+
+	return World;
+}
+
+void printWorld(const vector<vector<Points1*>>& World) {
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; j < y; j++) {
+			cout << World[i][j]->Infect_ed() << " ";
+		}
+		cout << endl;
+	}
+}
+
+void infect(vector<vector<Points1*>>& World) {
+	int dist = 1;
+	bool done = false;
+
+	//introduce a zombie
+	Zombies1 tempZombie;
+
+	while (!done) {
+		done = true;
+
+		for (int i = zzX - dist; i <= zzX + dist; i++) {
+			for (int j = zzY - dist; j <= zzY + dist; j++) {
+
+				if (i >= 0 && i < x && j >= 0 && j < y) {
+
+					if (World[i][j]->getPoints() < tempZombie.getPoints()) {
+						delete World[i][j];
+						World[i][j] = new Zombies1();
+					}
+				}
+			}
+		}
+
+		// Check for remaining humans
+		for (int i = 0; i < x; i++) {
+			for (int j = 0; j < y; j++) {
+				if (World[i][j]->getPoints() < tempZombie.getPoints()) {
+					done = false;
+				}
+			}
+		}
+
+		printWorld(World);
+		cout << endl;
+
+		dist++;
+	}
+}
+
+void checkArgs() {
+	if (x <= 0 || y <= 0) {
+		cout << "Invalid grid dimensions." << endl;
+		exit(1);
+	}
+	if (zzX < 0 || zzX >= x || zzY < 0 || zzY >= y) {
+		cout << "Invalid z position." << endl;
+		exit(1);
+	}
+}
+----------------------------------------------------------------------------------------------------------------------------
+//Humans1.cpp file
+
+#include "Humans1.h"
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <random>
+
+//Set all the ages, resistances, and weapons into random functions to create unique humans
+Humans1::Humans1() {
+	//Sets the ages for the calculatePoints function -- creates a list
+	std::string ages[] = { "Baby", "Teenager", "Young Adult", "Adult" , "Elderly" };
+
+	//Set the resistant or armor types for the calculatePoints function -- creates a list
+	std::string resistances[] = { "normal clothes", "leather hide", "biking gear", "army gear" };
+
+	//Set the weapon types into a list for the calculatePoints function
+	std::string weapons[] = { "hands", "bat", "knife", "gun" };
+
+	//Set up the random function to put these attributes to the humans
+	age = ages[rand() % 5];
+	resistance = resistances[rand() % 4];
+	weapon = weapons[rand() % 4];
+
+	calculatePoints();
+}
+
+void Humans1::calculatePoints() {
+	//Set the base points
+	points = 0;
+	points = getWeapons(weapon)
+		+ getResistance(resistance)
+		+ getAge(age);
+}
+
+int Humans1::getWeapons(const std::string& weapon) const {
+	//set up the points for weapons
+	if (weapon == "gun") return 5;
+	else if (weapon == "knife") return 3;
+	else if (weapon == "bat") return 2;
+	else if (weapon == "hands") return 0;
+	return 0;
+}
+
+int Humans1::getResistance(const std::string& resistance) const {
+	//set up the points for resistance/armour
+	if (resistance == "army gear") return 5;
+	else if (resistance == "biking gear") return 3;
+	else if (resistance == "leather hide") return 2;
+	else if (resistance == "normal clothes") return 0;
+	return 0;
+}
+
+int Humans1::getAge(const std::string& age) const {
+	//set up points for age
+	if (age == "Young Adult") return 5;
+	else if (age == "Teenager") return 3;
+	else if (age == "Adult") return 4;
+	else if (age == "Elderly") return 2;
+	else if (age == "Baby") return 0;
+	return 0;
+}
+
+//Will gather the amount of points
+int Humans1::getPoints() const {
+	return points;
+}
+
+//Gives different symbols based on the amount of points a human has
+char Humans1::Infect_ed() {
+	if (points <= 0) {
+		return '.';
+	}
+	else if (points <= 3) {
+		return '*';
+	}
+	else if (points <= 6) {
+		return 'h';
+	}
+	else if (points <= 12) {
+		return 'H';
+	}
+	else if (points <= 15) {
+		return 'S';
+	}
+	//Sets up a fail safe to alert whether the code is working
+	else {
+		return -1;
+	}
+}
+
+----------------------------------------------------------------------------------------------------------------------------
+//Humans1.h file
+
+#include "Points1.h"
+#include <string>
+#include <iostream>
+
+class Humans1 : public Points1 {
+private:
+	int points;
+
+public:
+	Humans1();
+
+	std::string age;
+	std::string weapon;
+	std::string resistance;
+
+	int getWeapons(const std::string& weapon) const;
+	int getResistance(const std::string& resistance) const;
+	int getAge(const std::string& age) const;
+
+	int getPoints() const;
+	char Infect_ed() override;
+
+	void calculatePoints();
+};
+
+
+----------------------------------------------------------------------------------------------------------------------------
+//Zombies1.cpp file
+
+#include "Zombies1.h"
+#include <string>
+#include <iostream>
+
+Zombies1::Zombies1() {
+    //Sets up the speed types for the zombies
+    std::string speeds[] = { "Just a Head", "Crawler", "Slow Walker", "Walker", "Runner", "Sprinter" };
+
+    //Sets up the strength types for the zombies in a list
+    std::string strengths[] = { "Just a Head", "Average Person", "Body Builder", "Police Officer", "Farmer", "Brute" };
+
+    //Sets the Aggression for the zombies into a list
+    std::string aggressions[] = { "Just a Head", "Average Zombie", "Murderer", "Junkie", "Cocaine Bear", "Rabid" };
+
+    //Set up the functions to randomize how "strong" the zombies will be in the world
+    speed = speeds[rand() % 6];
+    strength = strengths[rand() % 6];
+    bite = aggressions[rand() % 6];
+
+    calculatePoints();
+}
+
+int Zombies1::getSpeed(const std::string& speed) const {
+    //Set up the speed and their values
+    if (speed == "Sprinter") return 6;
+    else if (speed == "Runner") return 5;
+    else if (speed == "Walker") return 4;
+    else if (speed == "Slow Walker") return 3;
+    else if (speed == "Crawler") return 2;
+    else if (speed == "Just a Head") return 1;
+    return 0;
+}
+
+int Zombies1::getStrength(const std::string& strength) const {
+    //Set up the Strength of the Zombie
+    if (strength == "Brute") return 6;
+    else if (strength == "Farmer") return 5;
+    else if (strength == "Police Officer") return 4;
+    else if (strength == "Body Builder") return 3;
+    else if (strength == "Average Person") return 2;
+    else if (strength == "Just a Head") return 1;
+    return 0;
+}
+
+int Zombies1::getBite(const std::string& bite) const {
+    //Set up the Aggression index
+    if (bite == "Rabid") return 6;
+    else if (bite == "Cocaine Bear") return 5;
+    else if (bite == "Junkie") return 4;
+    else if (bite == "Murderer") return 3;
+    else if (bite == "Average Zombie") return 2;
+    else if (bite == "Just a Head") return 1;
+    return 0;
+}
+
+//Set up the Point system for the Zombies
+void Zombies1::calculatePoints() {
+    points = 0;
+    points = getSpeed(speed) 
+        + getStrength(strength) 
+        + getBite(bite);
+}
+
+//Returns the points that the given zombie has
+int Zombies1::getPoints() const {
+    return points;
+}
+
+//Sets the characters up for the zombies
+char Zombies1::Infect_ed() {
+    if (points == 0) {
+        return 'w';
+    }
+    else if (points <= 3) {
+        return 'W';
+    }
+    else if (points <= 8) {
+        return 'z';
+    }
+    else if (points <= 14) {
+        return 'Z';
+    }
+    else if (points <= 18) {
+        return 'V';
+    }
+    //puts a check in place
+    else {
+        return -1;
+    }
+}
+
+----------------------------------------------------------------------------------------------------------------------------
+//Zombies1.h file
+
+#pragma once
+#include "Points1.h"
+#include <string>
+
+class Zombies1 : public Points1 {
+private:
+    int points;
+
+public:
+    Zombies1();
+
+    std::string speed;
+    std::string strength;
+    std::string bite;
+
+    int getSpeed(const std::string& speed) const;
+    int getStrength(const std::string& strength) const;
+    int getBite(const std::string& bite) const;
+
+    //Will allow the points to be compared
+    void calculatePoints() override;
+
+    //Sets the interface up to get the points for the zombies
+    int getPoints() const;
+
+    //Checks whether or not it can infect a human 
+    char Infect_ed() override;
+};
+
+----------------------------------------------------------------------------------------------------------------------------
+//Points1.h
+
+#pragma once
+#include <iostream>
+
+//Create a class for a points system in both Zombie nad Humans
+class Points1
+{
+public:
+	//Allows for the other classes to modify this
+	virtual ~Points1() {}
+
+	//Sets up the container for the points
+	virtual int getPoints() const = 0;
+	virtual void calculatePoints() = 0;
+	virtual char Infect_ed() = 0;
+};
+
