@@ -1,0 +1,20 @@
+#Week 1 Spell Checker Problem
+#Import the dictionary list for spell checks
+with open("Dictionary.txt", "r", encoding="utf8") as f:     #Acts as a dictionary
+    dictionary = {line.strip().lower() for line in f if line.strip()}
+
+#Grab the sentence from the user
+inpu = input("Enter a sentence to check the spelling: ")
+
+#Split the sentence into a list to check better
+userList = inpu.split()
+print(userList)
+
+#Start the spell check
+for word in userList:
+    if word in dictionary:
+        print(f"'{word}' is spelled correctly.")
+    else:
+        print(f"'{word}' is spelled incorrectly.")
+
+#Run the function
