@@ -1,0 +1,143 @@
+//Module 3: Fortune Picker Problem
+#include <iostream>
+#include <string>
+using namespace std;
+
+//Create a function for the picker
+void myFortune()
+{
+    string answer;
+    cout << "Welcome to the Fortune Picker! Would you like to pick your fortune?";
+    cout << "Type 'Y' for yes, and 'N' for no: ";
+    cin >> answer;
+    cout << "You picked: " << answer << ". ";
+    if (answer == "Y") {
+        int x = 0;
+        cout << "Pick a number between 1 and 4: ";
+        cin >> x;
+        cout << "You chose the number: " << x << ". ";
+
+        //Make the inside of the fortune teller for the first part
+        if (x == 1 || x == 3) {
+            int y = 0;
+            cout << "Choose a number that is one of the following: 1, 2, 5, 6: ";
+            cin >> y;
+
+            //Make the inside of the fortune teller for the second part
+            if (y == 1 || y == 5) {
+                int v = 0;
+                cout << "Choose a number from the following: 3, 4, 7, 8: ";
+                cin >> v;
+                if (v == 3) {
+                    cout << "You will have a prosperous year.";
+                }
+                else if (v == 4) {
+                    cout << "Love is just around the corner.";
+                } 
+                else if (v == 7) {
+                    cout << "Someone important will come around when you most need them.";
+                }
+                else if (v == 8) {
+                    cout << "You will find new meaning to your efforts.";
+                }
+                else {
+                    cout << "The number you entered is not one from the list.";
+                }
+            }
+
+            //Make the inside of the fortune teller for the second part
+            else if (y == 2 || y == 6) {
+                int w = 0;
+                cout << "Choose a number from the following: 1, 2, 5, 6: ";
+                cin >> w;
+                if (w == 1) {
+                    cout << "You will find something worth gold this year.";
+                }
+                else if (w == 2) {
+                    cout << "Someone close to you will ask you something of importance.";
+                }
+                else if (w == 5) {
+                    cout << "A stranger will give you great advice soon.";
+                }
+                else if (w == 6) {
+                    cout << "Challenge yourself and you will be pleasently surpised.";
+                }
+                else {
+                    cout << "The number you entered is not one from the list.";
+                }
+
+            }
+        }
+        //Make the other part of the inside for the first part
+        else if (x == 2 || x == 4) {
+            int z = 0;
+            cout << "Choose a number from one of the following: 3, 4, 7, 8: ";
+            cin >> z;
+
+            //Make the first part of the inside of the fortune picker
+            if (z == 3 || z == 7) {
+                int m = 0;
+                cout << "Choose a number from one of the following: 1, 2, 5, 6: ";
+                cin >> m;
+
+                if (m == 1) {
+                    cout << "You will find something worth gold this year.";
+                }
+                else if (m == 2) {
+                    cout << "Someone close to you will ask you something of importance.";
+                }
+                else if (m == 5) {
+                    cout << "A stranger will give you great advice soon.";
+                }
+                else if (m == 6) {
+                    cout << "Challenge yourself and you will be pleasently surpised.";
+                }
+                else {
+                    cout << "The number you entered is not one from the list.";
+                }
+            }
+
+            //Make the second part of the inside of the fortune picker
+            else if (z == 4 || z == 8) {
+                int n = 0;
+                cout << "Choose a number from one of the following: 3, 4, 7, 8: ";
+                cin >> n;
+
+                if (n == 3) {
+                    cout << "You will have a prosperous year.";
+                }
+                else if (n == 4) {
+                    cout << "Love is just around the corner.";
+                }
+                else if (n == 7) {
+                    cout << "Someone important will come around when you most need them.";
+                }
+                else if (n == 8) {
+                    cout << "You will find new meaning to your efforts.";
+                }
+                else {
+                    cout << "The number you entered is not one from the list.";
+                }
+            }
+            else {
+                cout << "This is not a number from the list.";
+            }
+        }
+        else {
+            cout << "This number is not between 1 and 4.";
+        }
+    } 
+    else {
+        cout << "Thank you for trying the Fortune Picker.";
+    }
+
+}
+
+
+
+
+int main()
+{
+    myFortune();
+    return 0;
+}
