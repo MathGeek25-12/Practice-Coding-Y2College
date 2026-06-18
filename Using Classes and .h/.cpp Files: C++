@@ -1,0 +1,288 @@
+//Module 4- Arrays and Functions; Intro to Computer Science II
+----------------------------------------------------------------------------------------------------------------------------
+//Module 7 Main Class
+#include "Course.h"
+#include "Student1.h"
+#include "Person1.h"
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    Course Student[4];
+
+    Student[0] = Course("BIOE 104", 104, "Fall 2026", 3, 4);
+    Student[0].CalculateGPA();
+    Student[0].setAge(20);
+    Student[0].GetGrade();
+    Student[0].PrintStudent();
+    Student[0].printPerson1();
+    Student[0].printTranscript();
+
+    Student[1] = Course("CSCI 132", 132, "Fall 2026", 4, 4);
+    Student[1].CalculateGPA();
+    Student[1].setAge(23);
+    Student[1].GetGrade();
+    Student[1].PrintStudent();
+    Student[1].printPerson1();
+    Student[1].printTranscript();
+
+    Student[2] = Course("HSB 123", 123, "Fall 2026", 3, 4);
+    Student[2].CalculateGPA();
+    Student[2].setAge(18);
+    Student[2].GetGrade();
+    Student[2].PrintStudent();
+    Student[2].printPerson1();
+    Student[2].printTranscript();
+
+    Student[3] = Course("HHW 235", 235, "Fall 2026", 4, 4);
+    Student[3].CalculateGPA();
+    Student[3].setAge(22);
+    Student[3].GetGrade();
+    Student[3].PrintStudent(); 
+    Student[3].printPerson1();
+    Student[3].printTranscript();
+
+    for (int i = 0; i < 4, i++) {
+        Student[i].printPerson1();
+        Student[i].PrintStudent();
+        Student[i].printTranscript();
+    }
+}
+
+----------------------------------------------------------------------------------------------------------------------------
+
+//Course.cpp file
+#include "Course.h"
+#include <iostream>
+#include <string>
+
+Course::Course(std::string CourseT, int CN, std::string SM, float Creds, int Gr) {
+	this->CourseTitle = CourseT;
+	this->CourseNumber = CN;
+	this->Semester = SM;
+	this->Credits = Creds;
+	this->Grade = Gr;
+}
+
+void Course::setCourseTitle(std::string CourseT) {
+	this->CourseTitle = CourseT;
+}
+
+void Course::setCourseNumber(int CN) {
+	this->CourseNumber = CN;
+}
+
+void Course::setSemester(std::string SM) {
+	this->Semester = SM;
+}
+
+void Course::setCredits(float Creds) {
+	this->Credits = Creds;
+}
+
+void Course::setGrade(int Gr) {
+	this->Grade = Gr;
+}
+
+int Course::GetGrade() {
+	return this->Grade;
+}
+
+float Course::GetCredits() {
+	return this->Credits;
+}
+
+void PrintTranscript() {
+	std::cout << this->CourseT << ", " << this->CourseNumber << ", " << this->Semester << ", " << this->Credits << ", "
+		<< this->Grade << "." << std::endl;
+}
+--------------------------------------------------------------------------------------------------------------------------
+//Course.h file
+#pragma once
+
+#include "Student1.h"
+#include <string>
+#include <iostream>
+
+class Course : public Student1 {
+private:
+	std::string CourseTitle;
+	int CourseNumber;
+	std::string Semester;
+	float Credits;
+	int Grade;
+
+public:
+	Course();
+
+	Course(std::string CourseTitle, int CourseNumber, std::string Semester, float Credits, int Grade);
+
+	void setCourseTitle(std::string CourseTitle);
+
+	void setCourseNumber(int CourseNumber);
+
+	void setSemester(std::string Semester);
+
+	void setCredits(float Credits);
+
+	void setGrade(int Grade);
+
+	void PrintTranscript();
+
+	int GetGrade();
+
+	float GetCredits();
+};
+
+-------------------------------------------------------------------------------------------------------------------------
+
+//Person1.cpp file
+#include "Person1.h"
+#include <string>
+#include <iostream>
+
+//Make the functions work with the previously defined and named functions
+Person1::Person1() {
+	this->age = 0;
+	this->name = "N/A";
+	this->ID = 0;
+	this->major = "N/A";
+}
+
+Person1::Person1(std::string name, int age, int ID, std::string major) {
+	this->name = name;
+	this->ID = ID;
+	this->age = age;
+	this->major = major;
+}
+void Person1::setAge(int age);
+
+void Person1::setID(int ID);
+
+void Person1::setName(std::string name);
+
+void Person1::setMajor(std::string major);
+
+void Person1::printPerson1() {
+	std::cout << "Name: " << this->name;
+	std::cout << "ID Number: " << this->ID; 
+	std::cout << "Age: " << this->age;
+	std::cout << "Major: " << this->major;
+}
+
+--------------------------------------------------------------------------------------------------------------------------
+
+//Person1.h file
+#pragma once
+
+#include <string>
+#include <iostream>
+
+//introduce the class name, variables, and functions without definition
+class Person1
+{
+private:
+	std::string name;
+	int ID;
+	int age;
+
+public:
+	Person1();
+
+	Person1(std::string name, int ID, int age);
+
+	void printPerson1();
+
+	void setName(std::string name);
+
+	void setID(int ID);
+
+	void setAge(int age);
+
+};
+
+---------------------------------------------------------------------------------------------------------------------------
+
+//Student1.cpp file
+#include "Student1.h"
+#include "Course.h"
+#include <iostream>
+#include <string>
+
+Student1::Student1() {
+	this->major = "Blank";
+	this->GPA = 0;
+}
+
+Student1::Student1(std::string major, float GPA, Course) {
+	this->major = major;
+	this->GPA = GPA;
+	this->Course = Course;
+}
+
+void Student1::PrintStudent() {
+	std::cout << "Major: " << this->major;
+	std::cout << "GPA: " << this->GPA;
+	std::cout << "Courses: " << this->Course;
+}
+
+void Student1::register(Course course) {
+	this->transcript[courseCount++] = course;
+}
+
+void Student1::setMajor(std::string major) {
+	this->major = major;
+}
+
+void Student1::setGPA(float GPA);
+
+void Student1::CalculateGPA() {
+	float GPA = 0;
+	int totalCredits = 0;
+	for (int i = 0; i < courseCount; i++) {
+		GPA += transcript[i].GetCredits() * transcript[i].GetGrade();
+		totalCredits += transcript[i].GetCredits();
+	}
+	this->GPA = GPA / totalCredits;
+}
+
+void Student1::Course(Course);
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+//Student1.h file
+#pragma once
+
+#include "Person1.h"
+#include "Course.h"
+#include <string>
+#include <iostream>
+
+class Student1 : public Person1
+{
+private:
+	std::string major;
+	float GPA;
+	Course transcript[45];
+	int courseCount;
+
+public:
+	Student1();
+
+	Student1(std::string major, float GPA);
+
+	void register(Course course);
+
+	void printTranscript();
+
+	void CalculateGPA();
+
+	void PrintStudent();
+
+	void setMajor(std::string major);
+
+	void setGPA(float GPA);
+};
+  
