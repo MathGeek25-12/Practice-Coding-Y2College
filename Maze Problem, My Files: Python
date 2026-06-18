@@ -1,0 +1,458 @@
+'''
+I solved this maze using two different methods in python, Stacks and Queues
+I will lable the code separated by '='
+'''
+==============================================================================================================================
+'''
+QueueOfPositions.py file, this is not the solution, but the code behind it.
+This was mostly written by the person who wrote the other code; however, I modified certain lines to match this problem.
+The places I modified are marked by a comment to the right of it.
+'''
+from Position import Position
+#Rename File to QueueOfPositions
+
+class Node:
+
+    def __init__(self):
+        self.item = None                  #Replace "" with None
+        self.next = None
+
+#Change the name to QueueOfPositions
+class QueueOfPositions:
+
+    def __init__(self):
+        self.first = None
+        self.last  = None
+
+    # Add a new string to the queue
+    def enqueue(self, s):
+        node = Node()
+        node.item = s
+        node.next = None
+
+        if self.last != None:
+            self.last.next = node
+        self.last = node
+
+        if self.first == None:
+            self.first = node
+
+    # Remove the least recently added string
+    def dequeue(self):
+        if self.first == None:
+            throw ("Queue is empty!")
+        result = self.first.item
+        self.first = self.first.next
+        if self.first == None:
+            self.last = None
+        return result
+
+    # Return a string representation of the queue	
+    def toString(self):
+        result = ""
+        current = self.first
+        while current != None:
+            result += current.item.toString()
+            result += " "
+            current = current.next
+        return result
+	
+    def isEmpty(self):
+        return self.first == None
+    
+# main method for testing out the class
+if __name__ == "__main__":
+   #Change the name to match the changed def function
+    q = QueueOfPositions()
+
+    print("queue = " + q.toString())
+
+    q.enqueue(Position(1,1))
+    print(q.toString())
+
+    print("dequeue = " + q.toString())
+    print(q.toString())
+
+    q.enqueue(Position(2,2))
+    q.enqueue(Position(3,3))
+    q.enqueue(Position(4,4))
+    print(q.toString())
+
+    print("dequeue = " + q.toString())
+    print(q.toString())
+    print("dequeue = " + q.toString())
+    print(q.toString())
+    print("dequeue = " + q.toString())
+    print(q.toString())
+
+============================================================================================================================
+'''StackOfPosition.py is the same as the code before as I modified only sections'''
+
+from Position import Position
+#Change the name from StackOfStrings to StackOfPositions
+
+class Node:
+
+    def __init__(self):
+        self.item = None
+        self.next = None
+
+#Change name of class	
+class StackOfPositions:
+
+    def __init__(self):
+        self.first = None
+
+    # Add a new string to the stack
+    def push(self, s):
+        node = Node()
+        node.item = s;
+
+        if self.first == None:
+            self.first = node
+        else:
+            node.next = self.first
+            self.first = node
+
+    # Remove the most recently added string
+    def pop(self):
+        if self.first == None:
+            throw ("Stack is empty!")
+        result = self.first.item
+        self.first = self.first.next
+        return result
+
+    # Return a string representation of the stack	
+    def toString(self):
+        result = ""
+        current = self.first
+        while current != None:
+            result += current.item.toString()
+            result += " "
+            current = current.next
+        return result
+
+    # Check if the stack is empty
+    def isEmpty(self):
+        return self.first == None
+    
+# main method for testing out the class
+if __name__ == "__main__":
+    #since we chaged it to StackOfPositions we need to change the names and add parameters
+    q = StackOfPositions()
+
+    print("stack = " + q.toString())
+
+    q.push(Position(1,1))
+    print(q.toString())
+
+    print("pop = " + q.pop().toString())  #Like here
+    print(q.toString())
+
+    q.push(Position(2,2))                 #Change the positions to coordinates
+    q.push(Position(3,3))
+    q.push(Position(4,4))
+    print(q.toString())
+
+    print("pop = " + q.pop().toString())  #Here
+    print(q.toString())
+    print("pop = " + q.pop().toString())  #Here
+    print(q.toString())
+    print("pop = " + q.pop().toString())  #And Here
+    print(q.toString())		
+
+============================================================================================================================
+''Solve.py file is one that I wrote soley'''
+
+#Solve.py file
+#Final Project
+#Import all the important files into the Solving python module
+import sys
+import color
+import StdDraw
+import time
+from Maze import Maze
+from QueueOfPositions import QueueOfPositions
+from StackOfPositions import StackOfPositions
+from Position import Position
+
+
+#Start the function with the important information to create the maze
+'''Make the size of the maze dependent on the command thats entered
+into the command line'''
+size = int(sys.argv[1])         #Takes an entry from the first entered number in
+M = Maze(size)                  #the command line
+M.draw()                        #Draws the maze
+
+
+'''
+Solve with Stacks function
+'''
+def solve_w_stack(maze):
+    #Get the start and end points
+    start = maze.getStart()
+    end = maze.getFinish()
+
+    #Create the stack to start the solving feature
+    stack = StackOfPositions()
+    stack.push(start)               #Starts the movement
+
+    #Tracks the visited places to avoid returning
+    visited = set()
+    visited.add(start)
+
+    #Tracks the movement to count later on
+    path_map = {id(start): None}    #Also marks the path
+
+    step_count = 0
+    
+Checking Directions
+    #Use stacks to check all directions
+    while not stack.isEmpty():
+        current = stack.pop()
+        step_count += 1
+
+        #Mark the current postition in green
+        current.draw(StdDraw.GREEN)
+        StdDraw.show(1)
+
+        #Set a check to see if its on the end marker
+        if current.equals(end):
+            return reconstruct_path(current, path_map, start)
+
+        #Set up coordinates for movement tracking/finding the path forward
+        x = current.getX()
+        y = current.getY()
+
+        #Northward:
+        if maze.openNorth(current):
+            neighbor = Position(x, y+1)
+            if not position_in_visited(neighbor, visited):
+                visited.add(neighbor)
+                path_map[id(neighbor)] = current
+                stack.push(neighbor)
+
+        #Southward:
+        if maze.openSouth(current):
+            neighbor = Position(x, y-1)
+            if not position_in_visited(neighbor, visited):
+                visited.add(neighbor)
+                path_map[id(neighbor)] = current
+                stack.push(neighbor)
+
+        #Eastward:
+        if maze.openEast(current):
+            neighbor = Position(x+1, y)
+            if not position_in_visited(neighbor, visited):
+                visited.add(neighbor)
+                path_map[id(neighbor)] = current
+                stack.push(neighbor)
+
+        #Westward:
+        if maze.openWest(current):
+            neighbor = Position(x-1, y)
+            if not position_in_visited(neighbor, visited):
+                visited.add(neighbor)
+                path_map[id(neighbor)] = current
+                stack.push(neighbor)
+
+    print("No Path Found...")       #Print only if there is an error
+    return None                     #But every maze made should be solvable
+
+
+
+Make the additional necessary defintions to run the program smoothly
+#This checks if a position is already visited and in the visited set
+def position_in_visited(pos, visited_set):
+    for v in visited_set:
+        if pos.equals(v):
+            return True
+    return False
+
+#This reconstructs the path from beginning to end using path_map which stores the 
+#parent position for each position
+def reconstruct_path(end_pos, path_map, start_pos):
+    path = []
+    current = end_pos
+
+    while current is not None:
+        path.append(current)
+        current = path_map.get(id(current))
+
+    return list(reversed(path))
+
+def print_mazeSolution(solution_path):
+    if solution_path is None:
+        print("No Solution Found")
+        return
+
+    print("=" * 50)
+    print(f"Total iterations: {len(solution_path)}")
+    print("=" * 50)
+    for i, pos in enumerate(solution_path):
+        print(f"Step {i}: Position({pos.getX()}, {pos.getY()})")
+    print("=" * 50)
+        
+def visualize_solution(maze, solution_path):
+    if solution_path is None:
+        return
+    
+    # Draw the solution path in red
+    for pos in solution_path:
+        pos.draw(StdDraw.RED)
+        StdDraw.show(30)
+    
+    # Redraw start in blue and finish in black
+    maze.getStart().draw(StdDraw.BLUE)
+    maze.getFinish().draw(StdDraw.BLACK)
+    StdDraw.show(2000)
+
+# Main execution
+if __name__ == "__main__":
+    # Solve the maze using the stack
+    solution = solve_w_stack(M)
+    
+    # Print the solution
+    print_mazeSolution(solution)
+    
+    # Visualize the solution on the maze
+    if solution:
+        visualize_solution(M, solution)
+
+------------------------------------------
+
+'''Solve with Queue function'''
+def solve_w_queue(maze):
+    #Get the start and end points
+    start = maze.getStart()
+    end = maze.getFinish()
+
+    #Create the stack to start the solving feature
+    queue = QueueOfPositions()
+    queue.enqueue(start)               #Starts the movement
+
+    #Tracks the visited places to avoid returning
+    visited = set()
+    visited.add(start)
+
+    #Tracks the movement to count later on
+    path_map = {id(start): None}    #Also marks the path
+
+    step_count = 0
+    
+    '''Checking Directions'''
+    #Use stacks to check all directions
+    while not queue.isEmpty():
+        current = queue.dequeue()
+        step_count += 1
+
+        #Mark the current postition in green
+        current.draw(StdDraw.GREEN)
+        StdDraw.show(1)
+
+        #Set a check to see if its on the end marker
+        if current.equals(end):
+            return reconstruct_path(current, path_map, start)
+
+        #Set up coordinates for movement tracking/finding the path forward
+        x = current.getX()
+        y = current.getY()
+
+        #Northward:
+        if maze.openNorth(current):
+            neighbor = Position(x, y+1)
+            if not position_in_visited(neighbor, visited):
+                visited.add(neighbor)
+                path_map[id(neighbor)] = current
+                queue.enqueue(neighbor)
+
+        #Southward:
+        if maze.openSouth(current):
+            neighbor = Position(x, y-1)
+            if not position_in_visited(neighbor, visited):
+                visited.add(neighbor)
+                path_map[id(neighbor)] = current
+                queue.enqueue(neighbor)
+
+        #Eastward:
+        if maze.openEast(current):
+            neighbor = Position(x+1, y)
+            if not position_in_visited(neighbor, visited):
+                visited.add(neighbor)
+                path_map[id(neighbor)] = current
+                queue.enqueue(neighbor)
+
+        #Westward:
+        if maze.openWest(current):
+            neighbor = Position(x-1, y)
+            if not position_in_visited(neighbor, visited):
+                visited.add(neighbor)
+                path_map[id(neighbor)] = current
+                queue.enqueue(neighbor)
+
+    print("No Path Found...")       #Print only if there is an error
+    return None                     #But every maze made should be solvable
+
+
+
+'''Make the additional necessary defintions to run the program smoothly'''
+#This checks if a position is already visited and in the visited set
+def position_in_visited(pos, visited_set):
+    for v in visited_set:
+        if pos.equals(v):
+            return True
+    return False
+
+#This reconstructs the path from beginning to end using path_map which stores the 
+#parent position for each position
+def reconstruct_path(end_pos, path_map, start_pos):
+    path = []
+    current = end_pos
+
+    while current is not None:
+        path.append(current)
+        current = path_map.get(id(current))
+
+    return list(reversed(path))
+
+def print_mazeSolution(solution_path):
+    if solution_path is None:
+        print("No Solution Found")
+        return
+
+    print("=" * 50)
+    print(f"Total iterations: {len(solution_path)}")
+    print("=" * 50)
+    for i, pos in enumerate(solution_path):
+        print(f"Step {i}: Position({pos.getX()}, {pos.getY()})")
+    print("=" * 50)
+        
+def visualize_solution(maze, solution_path):
+    if solution_path is None:
+        return
+    
+    # Draw the solution path in red
+    for pos in solution_path:
+        pos.draw(StdDraw.RED)
+        StdDraw.show(30)
+    
+    # Redraw start in blue and finish in black
+    maze.getStart().draw(StdDraw.BLUE)
+    maze.getFinish().draw(StdDraw.BLACK)
+    StdDraw.show(2000)
+
+# Main execution
+if __name__ == "__main__":
+    # Solve the maze using the stack
+    solution = solve_w_queue(M)
+    
+    # Print the solution
+    print_mazeSolution(solution)
+    
+    # Visualize the solution on the maze
+    if solution:
+        visualize_solution(M, solution)
+
+
+
+
