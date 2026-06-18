@@ -1,0 +1,91 @@
+//Module 4- Arrays and Functions; Intro to Computer Science II
+
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+void Populate(int Array[], int size) {
+	for (int i = 0; i < size; i++) {
+		Array[i] = rand() % 100;
+	}
+}
+
+int Sum(int Array[], int size) {
+	int sum = 0;
+	for (int i = 0; i < size; i++) {
+		sum = sum + Array[i];
+	}
+	return sum;
+}
+
+double Average(int Array[], int size) {
+	return static_cast<double>(Sum(Array, size)) / size;
+}
+
+//Finds the largest Value
+int Largest(int Array[], int size) {
+	int largest = Array[0];
+	for (int i = 1; i < size; i++) {
+		if (Array[i] > largest) {
+			largest = Array[i];
+		}
+	}
+	return largest;
+}
+
+//Finds the second largest value
+int Slargest(int Array[], int size) {
+	int largest = Array[0];
+	for (int i = 1; i < size; i++) {
+		if (Array[i] > largest) {
+			largest = Array[i];
+		}
+	}
+	int slargest = Array[0];
+	for (int i = 1; i < size; i++) {
+		if (Array[i] < largest and Array[i] > slargest) {
+			slargest = Array[i];
+		}
+	}
+	return slargest; 
+}
+
+//Search the array line by line
+int LineSearch(int Array[], int size, int key) {
+	for (int i = 0; i < size; i++) {
+		if (Array[i] == key) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int main()
+{
+	//set the limit for Array
+	int Array[100];
+
+	//Populate the list with numbers ranging from 1 - 99
+	Populate(Array, 100);
+
+	//Print all of the information that is gathered in the int functions above
+	cout << Sum(Array, 100) << endl;
+	cout << Average(Array, 100) << endl;
+	cout << Largest(Array, 100) << endl;
+
+	//Get a number from the user to search for within the array and if not found put out a -1
+	int x = 0;
+	cout << "Choose a number to search for between 1 and 99: ";
+	cin >> x;
+	int result = LineSearch(Array, 100, x);
+	if (result != -1) {
+		cout << "Your number was found.";
+	}
+	else {
+		cout << "Your number was not found." << endl;
+	}
+
+	//Find the second largest variable in the list or array
+	cout << Slargest(Array, 100) << endl;
+	return 0;
+}
